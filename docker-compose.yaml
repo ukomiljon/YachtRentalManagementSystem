@@ -11,121 +11,124 @@ services:
     restart: on-failure
     hostname: api-gateway
     depends_on:
-      - auth-service
-      - user-service
-      - booking-service
-      - payment-service
-      - notification-service
+      # - auth-service
+      # - user-service
+      # - booking-service
+      # - payment-service
+      # - notification-service
+      # - inventory-service
+      # - openai-service
       - postgres-db
       - mongo-db
       - rabbitmq
     networks:
       - service-network
 
-  auth-service:
-    container_name: auth-microservice
-    build:
-      context: ./microservices/auth-service
-      target: development
-    ports:
-      - 8001:8000
-    restart: on-failure
-    depends_on:
-      - postgres-db
-      - mongo-db
-      - notification-service
-      - rabbitmq
-    networks:
-      - service-network
+  # auth-service:
+  #   container_name: auth-microservice
+  #   build:
+  #     context: ./microservices/auth-service
+  #     target: development
+  #   ports:
+  #     - 8001:8000
+  #   restart: on-failure
+  #   depends_on:
+  #     - postgres-db
+  #     - mongo-db
+  #     - notification-service
+  #     - rabbitmq
+  #   networks:
+  #     - service-network
 
-  user-service:
-    container_name: user-microservice
-    build:
-      context: ./microservices/user-service
-      target: development
-    ports:
-      - 8002:8000
-    restart: on-failure
-    depends_on:
-      - postgres-db
-      - mongo-db
-      - auth-service
-      - rabbitmq
-    networks:
-      - service-network
+  # user-service:
+  #   container_name: user-microservice
+  #   build:
+  #     context: ./microservices/user-service
+  #     target: development
+  #   ports:
+  #     - 8002:8000
+  #   restart: on-failure
+  #   depends_on:
+  #     - postgres-db
+  #     - mongo-db
+  #     - auth-service
+  #     - rabbitmq
+  #   networks:
+  #     - service-network
 
-  inventory-service:
-    container_name: inventory-microservice
-    build:
-      context: ./microservices/inventory-service
-      target: development
-    ports:
-      - 8003:8000
-    restart: on-failure
-    depends_on:
-      - postgres-db
-      - mongo-db
-      - auth-service
-      - rabbitmq
-    networks:
-      - service-network
+  # inventory-service:
+  #   container_name: inventory-microservice
+  #   build:
+  #     context: ./microservices/inventory-service
+  #     target: development
+  #   ports:
+  #     - 8003:8000
+  #   restart: on-failure
+  #   depends_on:
+  #     - postgres-db
+  #     - mongo-db
+  #     - auth-service
+  #     - rabbitmq
+  #   networks:
+  #     - service-network
 
-  booking-service:
-    container_name: booking-microservice
-    build:
-      context: ./microservices/booking-service
-      target: development
-    ports:
-      - 8004:8000
-    restart: on-failure
-    depends_on:
-      - postgres-db
-      - mongo-db
-      - auth-service
-      - rabbitmq
-    networks:
-      - service-network
+  # booking-service:
+  #   container_name: booking-microservice
+  #   build:
+  #     context: ./microservices/booking-service
+  #     target: development
+  #   ports:
+  #     - 8004:8000
+  #   restart: on-failure
+  #   depends_on:
+  #     - postgres-db
+  #     - mongo-db
+  #     - auth-service
+  #     - rabbitmq
+  #   networks:
+  #     - service-network
 
-  payment-service:
-    container_name: payment-microservice
-    build:
-      context: ./microservices/payment-service
-      target: development
-    ports:
-      - 8005:8000
-    restart: on-failure
-    depends_on:
-      - postgres-db
-      - mongo-db
-      - auth-service
-      - rabbitmq
-    networks:
-      - service-network
+  # payment-service:
+  #   container_name: payment-microservice
+  #   build:
+  #     context: ./microservices/payment-service
+  #     target: development
+  #   ports:
+  #     - 8005:8000
+  #   restart: on-failure
+  #   depends_on:
+  #     - postgres-db
+  #     - mongo-db
+  #     - auth-service
+  #     - rabbitmq
+  #   networks:
+  #     - service-network
 
-  notification-service:
-    container_name: notification-microservice
-    build:
-      context: ./microservices/notification-service
-      target: development
-    ports:
-      - 8006:8000
-    restart: on-failure
-    depends_on:
-      - postgres-db
-      - mongo-db
-      - rabbitmq
-    networks:
-      - service-network
+  # notification-service:
+  #   container_name: notification-microservice
+  #   build:
+  #     context: ./microservices/notification-service
+  #     target: development
+  #   ports:
+  #     - 8006:8000
+  #   restart: on-failure
+  #   depends_on:
+  #     - postgres-db
+  #     - mongo-db
+  #     - rabbitmq
+  #   networks:
+  #     - service-network
 
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
+    hostname: rabbitmq
     ports:
       - 5672:5672  # RabbitMQ default messaging port
       - 15672:15672  # RabbitMQ management console
     environment:
-      RABBITMQ_DEFAULT_USER: "guest"
-      RABBITMQ_DEFAULT_PASS: "guest"
+      RABBITMQ_DEFAULT_USER: "admin"
+      RABBITMQ_DEFAULT_PASS: "admin"
     networks:
       - service-network
 
@@ -138,8 +141,8 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "your_password"  # Change this to a secure password or use .env
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"  # Change this to a secure password or use .env
     networks:
       - service-network
 
