@@ -9,6 +9,7 @@ services:
     ports:
       - 8000:8000
     restart: on-failure
+    hostname: api-gateway
     depends_on:
       - auth-service
       - user-service
@@ -19,10 +20,7 @@ services:
       - mongo-db
       - rabbitmq
     networks:
-      - service-gateway
-      - postgres-db
-      - mongo-db
-      - rabbitmq-net
+      - service-network
 
   auth-service:
     container_name: auth-microservice
@@ -38,9 +36,7 @@ services:
       - notification-service
       - rabbitmq
     networks:
-      - postgres-db
-      - service-gateway
-      - rabbitmq-net
+      - service-network
 
   user-service:
     container_name: user-microservice
@@ -56,9 +52,8 @@ services:
       - auth-service
       - rabbitmq
     networks:
-      - postgres-db
-      - service-gateway
-      - rabbitmq-net
+      - service-network
+
   inventory-service:
     container_name: inventory-microservice
     build:
@@ -73,9 +68,8 @@ services:
       - auth-service
       - rabbitmq
     networks:
-      - postgres-db
-      - service-gateway
-      - rabbitmq-net
+      - service-network
+
   booking-service:
     container_name: booking-microservice
     build:
@@ -90,9 +84,7 @@ services:
       - auth-service
       - rabbitmq
     networks:
-      - mongo-db
-      - service-gateway
-      - rabbitmq-net
+      - service-network
 
   payment-service:
     container_name: payment-microservice
@@ -108,9 +100,7 @@ services:
       - auth-service
       - rabbitmq
     networks:
-      - mongo-db
-      - service-gateway
-      - rabbitmq-net
+      - service-network
 
   notification-service:
     container_name: notification-microservice
@@ -125,9 +115,7 @@ services:
       - mongo-db
       - rabbitmq
     networks:
-      - postgres-db
-      - mongo-db
-      - rabbitmq-net
+      - service-network
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -139,40 +127,35 @@ services:
       RABBITMQ_DEFAULT_USER: "guest"
       RABBITMQ_DEFAULT_PASS: "guest"
     networks:
-      - rabbitmq-net
+      - service-network
 
   postgres-db:
     image: "postgres"
-    restart: "always"
-    networks:
-      - "postgres-db"
-    expose:
-      - "5432"
+    container_name: postgres-db
+    restart: always
     ports:
       - 5432:5432
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "your password"
+      POSTGRES_PASSWORD: "your_password"  # Change this to a secure password or use .env
+    networks:
+      - service-network
 
   mongo-db:
     image: mongo
+    container_name: mongo-db
     restart: always
-    networks:
-      - mongo-db
-    expose:
-      - "27017"
     ports:
       - 27017:27017
     volumes:
       - mongo_data:/data/db
+    networks:
+      - service-network
 
 networks:
-  service-gateway:
-  postgres-db:
-  mongo-db:
-  rabbitmq-net:
+  service-network:  # A single network for all services
 
 volumes:
   postgres:
